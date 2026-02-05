@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>San Valentín 💘</title>
+  <style>
+    :root{
+      --bg1:#ffdde1;
+      --bg2:#ee9ca7;
+      --card:#ffffffcc;
+      --text:#2b2b2b;
+      --yes:#22c55e;
+      --no:#ef4444;
+    }
+
+    *{ box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      overflow:hidden;
+    }
+
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      backdrop-filter: blur(8px);
+      border: 1px solid #ffffff80;
+      border-radius: 24px;
+      padding: 28px 22px;
+      box-shadow: 0 20px 60px #00000022;
+      text-align:center;
+      position:relative;
+    }
+
+    h1{
+      margin: 0 0 10px;
+      font-size: clamp(22px, 3.2vw, 34px);
+      color:var(--text);
+    }
+
+    p{
+      margin: 0 0 22px;
+      color:#444;
+      font-size: 16px;
+    }
+
+    .stage{
+      position:relative;
+      height: 220px;
+      border-radius: 18px;
+      background: #ffffff80;
+      border: 1px dashed #ffffffaa;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+    }
+
+    .btn{
+      border:0;
+      padding: 14px 22px;
+      border-radius: 999px;
+      font-weight:700;
+      font-size: 18px;
+      cursor:pointer;
+      transition: transform 140ms ease, filter 140ms ease;
+      user-select:none;
+      touch-action: manipulation;
+      box-shadow: 0 10px 25px #00000022;
+    }
+
+    .btn:active{ transform: translateY(1px) scale(0.99); }
+
+    #yes{
+      background: var(--yes);
+      color:white;
+    }
+    #yes:hover{ filter: brightness(1.05); }
+
+    #no{
+      background: var(--no);
+      color:white;
+      position:absolute;
+      left: 60%;
+      top: 58%;
+      transform: translate(-50%, -50%);
+    }
+    #no:hover{ filter: brightness(1.05); }
+
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      border-radius: 24px;
+    }
+    .heart{
+      position:absolute;
+      font-size: 22px;
+      opacity: 0.0;
+      transform: translateY(10px);
+      transition: opacity 300ms ease, transform 900ms ease;
+    }
+
+    .success{
+      margin-top: 16px;
+      font-size: 18px;
+      font-weight: 700;
+      color:#0f172a;
+      display:none;
+    }
+
+    .small{
+      margin-top: 10px;
+      font-size: 13px;
+      color:#555;
+      opacity:.9;
+    }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="hearts" id="hearts"></div>
+
+    <h1>¿Quieres ser mi cita de San Valentín? 💘</h1>
+    <p>Prometo comida rica, risas y un plan bonito contigo.</p>
+
+    <div class="stage" id="stage">
+      <button class="btn" id="yes">Sí</button>
+      <button class="btn" id="no">No</button>
+    </div>
+
+    <div class="success" id="success">
+      ¡SABÍA QUE DIRÍAS QUE SÍ! 🥹💖<br/>
+      Te amo. Nos vemos en San Valentín.
+    </div>
+
+    <div class="small">Tip: si estás en móvil, intenta tocar “No”… si puedes 😌</div>
+  </div>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const btnYes = document.getElementById('yes');
+    const btnNo  = document.getElementById('no');
+    const success = document.getElementById('success');
+    const hearts = document.getElementById('hearts');
+
+    let yesScale = 1;
+    let escapes = 0;
+
+    function rand(min, max){ return Math.random() * (max - min) + min; }
+
+    function moveNoButton(){
+      const s = stage.getBoundingClientRect();
+      const b = btnNo.getBoundingClientRect();
+
+      const padding = 12;
+      const maxX = s.width  - b.width  - padding;
+      const maxY = s.height - b.height - padding;
+
+      const x = rand(padding, Math.max(padding, maxX));
+      const y = rand(padding, Math.max(padding, maxY));
+
+      btnNo.style.left = x + "px";
+      btnNo.style.top  = y + "px";
+      btnNo.style.transform = "translate(0, 0)";
+    }
+
+    function growYes(){
+      yesScale = Math.min(yesScale + 0.12, 2.2);
+      btnYes.style.transform = `scale(${yesScale})`;
+    }
+
+    function popHeart(){
+      const h = document.createElement('div');
+      h.className = 'heart';
+      h.textContent = ['💖','💘','💞','💕','❤️','🥰'][Math.floor(rand(0,6))];
+      h.style.left = rand(5, 95) + '%';
+      h.style.top  = rand(10, 80) + '%';
+      hearts.appendChild(h);
+
+      requestAnimationFrame(() => {
+        h.style.opacity = 1;
+        h.style.transform = 'translateY(-20px) scale(1.15)';
+      });
+
+      setTimeout(() => {
+        h.style.opacity = 0;
+        h.style.transform = 'translateY(-60px) scale(0.9)';
+      }, 700);
+
+      setTimeout(() => h.remove(), 1200);
+    }
+
+    function escape(){
+      escapes++;
+      moveNoButton();
+      growYes();
+      popHeart();
+
+      if (escapes === 3) btnNo.textContent = "¿Segura? 😳";
+      if (escapes === 6) btnNo.textContent = "Piénsalo… 🙈";
+      if (escapes === 9) btnNo.textContent = "Imposible 😌";
+    }
+
+    btnNo.addEventListener('mouseenter', escape);
+
+    btnNo.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      escape();
+    }, { passive: false });
+
+    btnNo.addEventListener('click', (e) => {
+      e.preventDefault();
+      escape();
+    });
+
+    btnYes.addEventListener('click', () => {
+      success.style.display = 'block';
+      btnNo.style.display = 'none';
+      btnYes.textContent = "¡SÍÍÍ! 💍💖";
+      for (let i=0;i<12;i++) setTimeout(popHeart, i*80);
+    });
+
+    window.addEventListener('load', () => {
+      const s = stage.getBoundingClientRect();
+      btnNo.style.left = (s.width * 0.62) + "px";
+      btnNo.style.top  = (s.height * 0.62) + "px";
+      btnNo.style.transform = "translate(-50%, -50%)";
+    });
+  </script>
+</body>
+</html>
+
