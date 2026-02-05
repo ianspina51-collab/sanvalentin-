@@ -1,9 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>San Valentín 💘</title>
+  <title>Saint-Valentin 💘</title>
+
   <style>
     :root{
       --bg1:#ffdde1;
@@ -14,7 +15,10 @@
       --no:#ef4444;
     }
 
-    *{ box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    *{
+      box-sizing:border-box;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
 
     body{
       margin:0;
@@ -62,7 +66,7 @@
 
     .btn{
       border:0;
-      padding: 14px 22px;
+      padding: 14px 26px;
       border-radius: 999px;
       font-weight:700;
       font-size: 18px;
@@ -73,41 +77,22 @@
       box-shadow: 0 10px 25px #00000022;
     }
 
-    .btn:active{ transform: translateY(1px) scale(0.99); }
-
     #yes{
       background: var(--yes);
       color:white;
     }
-    #yes:hover{ filter: brightness(1.05); }
 
     #no{
       background: var(--no);
       color:white;
       position:absolute;
       left: 60%;
-      top: 58%;
+      top: 60%;
       transform: translate(-50%, -50%);
-    }
-    #no:hover{ filter: brightness(1.05); }
-
-    .hearts{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      border-radius: 24px;
-    }
-    .heart{
-      position:absolute;
-      font-size: 22px;
-      opacity: 0.0;
-      transform: translateY(10px);
-      transition: opacity 300ms ease, transform 900ms ease;
     }
 
     .success{
-      margin-top: 16px;
+      margin-top: 18px;
       font-size: 18px;
       font-weight: 700;
       color:#0f172a;
@@ -120,119 +105,104 @@
       color:#555;
       opacity:.9;
     }
+
+    .hearts{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      border-radius: 24px;
+    }
+
+    .heart{
+      position:absolute;
+      font-size: 22px;
+      opacity:0;
+      transition: opacity 300ms ease, transform 900ms ease;
+    }
   </style>
 </head>
+
 <body>
-  <div class="card" id="card">
+  <div class="card">
     <div class="hearts" id="hearts"></div>
 
-    <h1>¿Quieres ser mi cita de San Valentín? 💘</h1>
-    <p>Prometo comida rica, risas y un plan bonito contigo.</p>
+    <h1>Veux-tu être mon rendez-vous de la Saint-Valentin ? 💘</h1>
+    <p>Je te promets un bon repas, des rires et un moment magnifique avec moi.</p>
 
     <div class="stage" id="stage">
-      <button class="btn" id="yes">Sí</button>
-      <button class="btn" id="no">No</button>
+      <button class="btn" id="yes">Oui</button>
+      <button class="btn" id="no">Non</button>
     </div>
 
     <div class="success" id="success">
-      ¡SABÍA QUE DIRÍAS QUE SÍ! 🥹💖<br/>
-      Te amo. Nos vemos en San Valentín.
+      Je savais que tu dirais oui 🥹💖<br/>
+      On se voit dans quelques jours, je t’aime mon amour.
     </div>
 
-    <div class="small">Tip: si estás en móvil, intenta tocar “No”… si puedes 😌</div>
+    <div class="small">
+      Astuce : si tu es sur mobile, essaie de toucher « Non »… si tu peux 😌
+    </div>
   </div>
 
   <script>
     const stage = document.getElementById('stage');
     const btnYes = document.getElementById('yes');
-    const btnNo  = document.getElementById('no');
+    const btnNo = document.getElementById('no');
     const success = document.getElementById('success');
     const hearts = document.getElementById('hearts');
 
     let yesScale = 1;
-    let escapes = 0;
 
-    function rand(min, max){ return Math.random() * (max - min) + min; }
+    function random(min, max){
+      return Math.random() * (max - min) + min;
+    }
 
-    function moveNoButton(){
+    function moveNo(){
       const s = stage.getBoundingClientRect();
       const b = btnNo.getBoundingClientRect();
 
-      const padding = 12;
-      const maxX = s.width  - b.width  - padding;
-      const maxY = s.height - b.height - padding;
-
-      const x = rand(padding, Math.max(padding, maxX));
-      const y = rand(padding, Math.max(padding, maxY));
+      const x = random(10, s.width - b.width - 10);
+      const y = random(10, s.height - b.height - 10);
 
       btnNo.style.left = x + "px";
-      btnNo.style.top  = y + "px";
-      btnNo.style.transform = "translate(0, 0)";
-    }
+      btnNo.style.top = y + "px";
+      btnNo.style.transform = "translate(0,0)";
 
-    function growYes(){
-      yesScale = Math.min(yesScale + 0.12, 2.2);
+      yesScale = Math.min(yesScale + 0.15, 2.2);
       btnYes.style.transform = `scale(${yesScale})`;
+
+      createHeart();
     }
 
-    function popHeart(){
+    function createHeart(){
       const h = document.createElement('div');
-      h.className = 'heart';
-      h.textContent = ['💖','💘','💞','💕','❤️','🥰'][Math.floor(rand(0,6))];
-      h.style.left = rand(5, 95) + '%';
-      h.style.top  = rand(10, 80) + '%';
+      h.className = "heart";
+      h.textContent = ["💖","💕","💘","❤️","🥰"][Math.floor(random(0,5))];
+      h.style.left = random(5,95) + "%";
+      h.style.top = random(20,80) + "%";
       hearts.appendChild(h);
 
       requestAnimationFrame(() => {
         h.style.opacity = 1;
-        h.style.transform = 'translateY(-20px) scale(1.15)';
+        h.style.transform = "translateY(-30px)";
       });
-
-      setTimeout(() => {
-        h.style.opacity = 0;
-        h.style.transform = 'translateY(-60px) scale(0.9)';
-      }, 700);
 
       setTimeout(() => h.remove(), 1200);
     }
 
-    function escape(){
-      escapes++;
-      moveNoButton();
-      growYes();
-      popHeart();
-
-      if (escapes === 3) btnNo.textContent = "¿Segura? 😳";
-      if (escapes === 6) btnNo.textContent = "Piénsalo… 🙈";
-      if (escapes === 9) btnNo.textContent = "Imposible 😌";
-    }
-
-    btnNo.addEventListener('mouseenter', escape);
-
-    btnNo.addEventListener('touchstart', (e) => {
+    btnNo.addEventListener("mouseenter", moveNo);
+    btnNo.addEventListener("touchstart", e => {
       e.preventDefault();
-      escape();
-    }, { passive: false });
+      moveNo();
+    }, { passive:false });
 
-    btnNo.addEventListener('click', (e) => {
-      e.preventDefault();
-      escape();
-    });
-
-    btnYes.addEventListener('click', () => {
-      success.style.display = 'block';
-      btnNo.style.display = 'none';
-      btnYes.textContent = "¡SÍÍÍ! 💍💖";
-      for (let i=0;i<12;i++) setTimeout(popHeart, i*80);
-    });
-
-    window.addEventListener('load', () => {
-      const s = stage.getBoundingClientRect();
-      btnNo.style.left = (s.width * 0.62) + "px";
-      btnNo.style.top  = (s.height * 0.62) + "px";
-      btnNo.style.transform = "translate(-50%, -50%)";
+    btnYes.addEventListener("click", () => {
+      btnNo.style.display = "none";
+      btnYes.textContent = "OUIII 💍💖";
+      success.style.display = "block";
+      for(let i=0;i<10;i++) setTimeout(createHeart, i*100);
     });
   </script>
 </body>
 </html>
-
